@@ -12,9 +12,9 @@ st.set_page_config(
 )
 
 # Custom CSS untuk Tema Pastel Modern (Teal #2A7B88 & Soft Mint #E6F2F2)
-st.markdown(
+st.markdown("""
     <style>
-    .main {"""
+    .main {
         background-color: #F8FBFB;
     }
     .stButton>button {
@@ -39,9 +39,9 @@ st.markdown(
     }
     h1, h2, h3 {
         color: #2A7B88;
-    """}
+    }
     </style>
-, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # Header Aplikasi
 st.markdown("<h2 style='text-align: center; color: #2A7B88;'>📐 Web Scanner Papan Parabola Transparan</h2>", unsafe_allow_html=True)
@@ -65,10 +65,9 @@ with col1:
         image = Image.open(uploaded_file)
         st.image(image, caption="Dokumentasi Papan Parabola Murid", use_container_width=True)
     else:
-        # Placeholder gambar default jika belum upload
-        st.info("💡 Belum ada foto diunggah. Silakan ambil atau unggah foto hasil kerja papan parabola Anda di atas. (Berikut adalah simulasi input koordinat standar).")
+        st.info("💡 Belum ada foto diunggah. Silakan ambil atau unggah foto hasil kerja papan parabola Anda di atas.")
         
-    st.markdown("Masukkan koordinat $(x, y)$ dari 3 titik paku utama pada papan:")
+    st.markdown("Masukkan koordinat (x, y) dari 3 titik paku utama pada papan:")
     
     c1, c2, c3 = st.columns(3)
     with c1:
@@ -91,10 +90,7 @@ with col2:
     x_points = np.array([x1, x2, x3])
     y_points = np.array([y1, y2, y3])
     
-    # Cek apakah titik kolinear (berada pada satu garis lurus) atau nilai x duplikat
     try:
-        # np.polyfit dengan derajat 2: y = ax^2 + bx + c
-        # Mengembalikan koefisien [a, b, c]
         if len(np.unique(x_points)) < 3:
             st.error("⚠️ Peringatan: Nilai koordinat x pada titik-titik harus berbeda agar membentuk kurva parabola yang valid.")
             valid_parabola = False
@@ -103,7 +99,7 @@ with col2:
             a, b, c = coeffs[0], coeffs[1], coeffs[2]
             
             if abs(a) < 1e-5:
-                st.warning("⚠️ Titik-titik yang dimasukkan membentuk garis lurus (koefisien kuadrat $a \\approx 0$). Bukan parabola.")
+                st.warning("⚠️ Titik-titik yang dimasukkan membentuk garis lurus (koefisien kuadrat a ≈ 0). Bukan parabola.")
                 valid_parabola = False
             else:
                 valid_parabola = True
@@ -112,54 +108,40 @@ with col2:
         valid_parabola = False
 
     if valid_parabola:
-        # Hitung Titik Puncak (Vertex) Manual / Rumus Parabola
         xp = -b / (2 * a)
         yp = a * (xp ** 2) + b * xp + c
-        
-        # Hitung Diskriminan
         D = (b ** 2) - (4 * a * c)
         
-        # Arah Keterbukaan
         if a > 0:
             arah = "Terbuka ke Atas (Titik Balik Minimum)"
         else:
             arah = "Terbuka ke Bawah (Titik Balik Maksimum)"
             
-        # Format Persamaan Kuadrat
         sign_b = f"+ {b:.2f}x" if b >= 0 else f"- {abs(b):.2f}x"
         sign_c = f"+ {c:.2f}" if c >= 0 else f"- {abs(c):.2f}"
         eq_str = f"f(x) = {a:.2f}x² {sign_b} {sign_c}"
         
-        # Tampilkan Kartu Ringkasan Analisis Matematika
         st.markdown(f"""
         <div class="card">
             <h4 style="margin-top:0; color:#2A7B88;">📝 Kartu Ringkasan Analisis</h4>
             <p><b>Persamaan Kuadrat:</b><br><code style="font-size: 1.1em; color: #21616C;">{eq_str}</code></p>
-            <p><b>Koordinat Titik Puncak (x<sub>p</sub>, y<sub>p</sub>):</b> ({xp:.2f}, {yp:.2f})</p>
+            <p><b>Koordinat Titik Puncak (xₚ, yₚ):</b> ({xp:.2f}, {yp:.2f})</p>
             <p><b>Arah Kurva:</b> {arah}</p>
             <p><b>Nilai Diskriminan (D = b² - 4ac):</b> {D:.2f}</p>
         </div>
         """, unsafe_allow_html=True)
         
-        # Plot Grafik Presisi GeoGebra Style menggunakan Matplotlib
         fig, ax = plt.subplots(figsize=(6, 4.5))
         
-        # Rentang x untuk kurva mulus
         x_min_plot = min(x_points) - 2
         x_max_plot = max(x_points) + 2
         x_curve = np.linspace(x_min_plot, x_max_plot, 400)
         y_curve = a * (x_curve ** 2) + b * x_curve + c
         
-        # Plot Kurva Parabola Utama (Teal tebal)
         ax.plot(x_curve, y_curve, color="#2A7B88", linewidth=3, label=f"Parabola: {eq_str}")
-        
-        # Plot Titik Paku Fisik (Merah)
         ax.scatter(x_points, y_points, color="#E07A5F", s=80, zorder=5, label="Titik Paku Fisik")
-        
-        # Plot Titik Puncak (Orange/Kuning menonjol)
         ax.scatter([xp], [yp], color="#F4A261", s=120, marker="*", zorder=6, label=f"Puncak ({xp:.1f}, {yp:.1f})")
         
-        # Styling Sumbu & Grid
         ax.axhline(0, color='grey', linewidth=1, linestyle='--')
         ax.axvline(0, color='grey', linewidth=1, linestyle='--')
         ax.grid(True, linestyle=':', alpha=0.6)
@@ -168,7 +150,6 @@ with col2:
         ax.set_ylabel("Sumbu Y", fontsize=10)
         ax.legend(loc='upper right', fontsize=8)
         
-        # Terapkan latar belakang bersih
         fig.patch.set_facecolor('#F8FBFB')
         ax.set_facecolor('#FFFFFF')
         
@@ -176,6 +157,5 @@ with col2:
     else:
         st.info("ℹ️ Silakan masukkan koordinat 3 paku yang valid untuk merender grafik dan analisis fungsi kuadrat.")
 
-# Footer edukatif
 st.markdown("---")
 st.markdown("<p style='text-align: center; color: #888; font-size: 0.85em;'>Media Pembelajaran Phygital Matematika SMA • Berbasis Streamlit & NumPy</p>", unsafe_allow_html=True)
