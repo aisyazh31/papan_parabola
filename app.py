@@ -14,7 +14,7 @@ st.set_page_config(
 # Custom CSS untuk Tema Pastel Modern (Teal #2A7B88 & Soft Mint #E6F2F2)
 st.markdown(
     <style>
-    .main {
+    .main {"""
         background-color: #F8FBFB;
     }
     .stButton>button {
@@ -39,7 +39,7 @@ st.markdown(
     }
     h1, h2, h3 {
         color: #2A7B88;
-    }
+    """}
     </style>
 , unsafe_allow_html=True)
 
