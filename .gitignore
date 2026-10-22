@@ -1,5 +1,12 @@
-# Object file
-*.o
+# Python cache & virtual environment
+__pycache__/
+*.py[cod]
+venv/
+env/
 
-# Ada Library Information
-*.ali
+# Streamlit config lokal
+.streamlit/
+
+# File sistem OS
+.DS_Store
+Thumbs.db
