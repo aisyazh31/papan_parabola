@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 # Custom CSS untuk Tema Pastel Modern (Teal #2A7B88 & Soft Mint #E6F2F2)
-st.markdown("""
+st.markdown(
     <style>
     .main {
         background-color: #F8FBFB;
@@ -41,7 +41,7 @@ st.markdown("""
         color: #2A7B88;
     }
     </style>
-""", unsafe_allow_html=True)
+, unsafe_allow_html=True)
 
 # Header Aplikasi
 st.markdown("<h2 style='text-align: center; color: #2A7B88;'>📐 Web Scanner Papan Parabola Transparan</h2>", unsafe_allow_html=True)
